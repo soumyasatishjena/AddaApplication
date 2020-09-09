@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/TextEditTextHeadingAddNewEntry"
+            android:text="Facility Name"
+            tools:ignore="HardcodedText" />
+        <TextView
+            android:id="@+id/textSelect"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
+            android:padding="5dp"
+            android:hint="Select Facility"
+            android:background="@drawable/spinner_background"
+            tools:ignore="HardcodedText,UnusedAttribute" />
+        <TextView
+            style="@style/TextEditTextHeadingAddNewEntry"
+            android:text="Date"
+            tools:ignore="HardcodedText" />
+        <LinearLayout
+            style="@style/LayoutForOneView"
+            tools:ignore="UseCompoundDrawables">
+            <TextView
+                android:id="@+id/textAddDate"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="0.9"
+                android:hint="Enter Date"
+                style="@style/TimeEntry"
+                tools:ignore="Autofill,HardcodedText" />
+            <ImageView
+                android:id="@+id/imageDate"
+                style="@style/ImageDisplayClickAddGateEntry"
+                android:src="@drawable/ic_time"
+                tools:ignore="ContentDescription" />
+        </LinearLayout>
+
+        <TextView
+            style="@style/TextEditTextHeadingAddNewEntry"
+            android:text="Start Time"
+            tools:ignore="HardcodedText" />
+        <LinearLayout
+            style="@style/LayoutForOneView"
+            tools:ignore="UseCompoundDrawables">
+            <TextView
+                android:id="@+id/textStartTime"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="0.9"
+                android:hint="Enter Start Time"
+                style="@style/TimeEntry"
+                tools:ignore="Autofill,HardcodedText" />
+            <ImageView
+                android:id="@+id/imageStartTiming"
+                style="@style/ImageDisplayClickAddGateEntry"
+                android:src="@drawable/ic_time"
+                tools:ignore="ContentDescription" />
+        </LinearLayout>
+
+
+        <TextView
+            style="@style/TextEditTextHeadingAddNewEntry"
+            android:text="End Time"
+            tools:ignore="HardcodedText" />
+        <LinearLayout
+            style="@style/LayoutForOneView"
+            tools:ignore="UseCompoundDrawables">
+            <TextView
+                android:id="@+id/textEndTime"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="0.9"
+                android:hint="Enter End Time"
+                style="@style/TimeEntry"
+                tools:ignore="Autofill,HardcodedText" />
+            <ImageView
+                android:id="@+id/imageEndTiming"
+                style="@style/ImageDisplayClickAddGateEntry"
+                android:src="@drawable/ic_time"
+                tools:ignore="ContentDescription" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/buttonCheck"
+            style="@style/ButtonCheckNewEntry"/>
+
+    </LinearLayout>
+
+</layout>
