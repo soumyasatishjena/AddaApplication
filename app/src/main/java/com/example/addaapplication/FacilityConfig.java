@@ -10,15 +10,8 @@ public class FacilityConfig {
     private String status;
     private int totalAmount;
 
-    public FacilityConfig(String name, String startTime, String endTime, int price){
-        this.name = name;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.price = price;
-    }
-
-    public FacilityConfig(String name, String bookingData, String startTime, String endTime, String status,
-                          int totalAmount) {
+    public FacilityConfig(String name, String bookingData, String startTime, String endTime,
+                          String status, int totalAmount) {
         this.name = name;
         this.bookingData= bookingData;
         this.startTime = startTime;

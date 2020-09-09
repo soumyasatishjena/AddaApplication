@@ -23,13 +23,6 @@ public class Utility {
         return list;
     }
 
-    public static ArrayList<FacilityConfig> getFacilityTimePriceList(){
-        ArrayList<FacilityConfig> list = new ArrayList<>();
-        list.add(new FacilityConfig("ClubHouse", "10 am" ,"4 pm", 100));
-        list.add(new FacilityConfig("ClubHouse", "4 pm",  "10 pm", 500));
-        list.add(new FacilityConfig("Tennis Court", "10 am",  "10 pm", 50));
-        return list;
-    }
 
     @SuppressLint("SimpleDateFormat")
     public static long getDifferenceBetweenTime(String bookingStartTime, String bookingEndTime){
