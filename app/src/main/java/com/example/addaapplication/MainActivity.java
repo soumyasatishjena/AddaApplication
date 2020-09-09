@@ -121,7 +121,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
         RelativeLayout cardViewDialogSpinner = dialog.findViewById(R.id.cardViewDialogSpinner);
-        RelativeLayout dialogLayoutSpinnerBackground = dialog.findViewById(R.id.dialogLayoutSpinnerBackground);
+        RelativeLayout dialogLayoutSpinnerBackground =
+                dialog.findViewById(R.id.dialogLayoutSpinnerBackground);
         TextView textDialogHeading = dialog.findViewById(R.id.textDialogHeading);
 
         RecyclerView recyclerShowList =  dialog.findViewById(R.id.recyclerShowList);
