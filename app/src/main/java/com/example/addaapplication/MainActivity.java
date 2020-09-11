@@ -25,8 +25,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.addaapplication.databinding.ActivityMainBinding;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Objects;
 
 import static com.example.addaapplication.Utility.facilityConfigs;
@@ -155,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         facilityName = listFacilityList.get(i).getName();
         binding.textSelect.setText(facilityName);
-        clearViews();
+        clearViews(1);
         dialog.dismiss();
     }
 
@@ -165,16 +167,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             month = month+1;
             String day = String.valueOf(dayOfMonth);
             String mon = String.valueOf(month);
-            if(day.length() == 1){
+            if(day.length() == 1)
                 day = "0"+day;
-            }
-            if(mon.length()==1){
+
+            if(mon.length()==1)
                 mon = "0"+mon;
-            }
+
             bookingDate = day+"-"+mon+"-"+year;
             binding.textAddDate.setText(bookingDate);
-            binding.textStartTime.setText("");
-            binding.textEndTime.setText("");
+            clearViews(2);
         }
     }
 
@@ -186,38 +187,49 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Calendar calendarInstance = Calendar.getInstance();
             datetime.set(Calendar.HOUR_OF_DAY, hourOfDay);
             datetime.set(Calendar.MINUTE, minute);
-            if (datetime.getTimeInMillis() > calendarInstance.getTimeInMillis()) {
+            SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            String formattedDate = df.format(datetime.getTime());
+            @SuppressLint("DefaultLocale")
+            String timeFormat = String.format("%02d:%02d %s", hourOfDay,
+                    minute, hourOfDay < 12 ? "am" : "pm");
+            String showTime = getTimeDisplay(timeFormat);
+            if(bookingDate.equals(formattedDate)){
+                if (datetime.getTimeInMillis() > calendarInstance.getTimeInMillis()) {
+                    if(hourOfDay>= 10 && hourOfDay<=22) {
+                        setTimeForBooking(timeFormat, showTime);
+                    }else
+                        displayError("Cannot book before 10 Am and After 10 Pm");
+                }else
+                    displayError("Invalid Time Select Future Time No Past Time");
+
+            }else {
                 if(hourOfDay>= 10 && hourOfDay<=22) {
-                @SuppressLint("DefaultLocale")
-                String timeFormat = String.format("%02d:%02d %s", hourOfDay,
-                        minute, hourOfDay < 12 ? "am" : "pm");
-                    String showTime = getTimeDisplay(timeFormat);
-                if (setStartTime) {
-                    setStartTime = false;
-                    bookingStartTime = timeFormat;
-                    binding.textStartTime.setText(showTime);
-                    binding.textEndTime.setText("");
-                } else if (setEndTime) {
-                    setEndTime = false;
-                    bookingEndTime = timeFormat;
-                    long elapsed = getDifferenceBetweenTime(bookingStartTime, bookingEndTime);
-                    long diffMinutes = elapsed / (60 * 1000) % 60;
-                    long diffHours = elapsed / (60 * 60 * 1000) % 24;
-                    if (Integer.parseInt(String.valueOf(diffHours)) >= 1 &&
-                            Integer.parseInt(String.valueOf(diffMinutes)) == 0) {
-                        totalTimeOccupied = Integer.parseInt(String.valueOf(diffHours));
-                        binding.textEndTime.setText(showTime);
-                    } else {
-                        displayError("Select a Time For At list 1 hours Plus.. " +
-                                "with same minutes");
-                    }
-                }
+                    setTimeForBooking(timeFormat, showTime);
                 }else
                     displayError("Cannot book before 10 Am and After 10 Pm");
-            }else
-                displayError("Invalid Time Select Future " +
-                        "Time No Past Time");
+            }
+        }
+    }
 
+    private void setTimeForBooking(String timeFormat, String showTime) {
+        if (setStartTime) {
+            setStartTime = false;
+            bookingStartTime = timeFormat;
+            binding.textStartTime.setText(showTime);
+            clearViews(3);
+        } else if (setEndTime) {
+            setEndTime = false;
+            bookingEndTime = timeFormat;
+            long elapsed = getDifferenceBetweenTime(bookingStartTime, bookingEndTime);
+            long diffMinutes = elapsed / (60 * 1000) % 60;
+            long diffHours = elapsed / (60 * 60 * 1000) % 24;
+            if (Integer.parseInt(String.valueOf(diffHours)) >= 1 &&
+                    Integer.parseInt(String.valueOf(diffMinutes)) == 0) {
+                totalTimeOccupied = Integer.parseInt(String.valueOf(diffHours));
+                binding.textEndTime.setText(showTime);
+            } else
+                displayError("Select a Time For At list 1 hours Plus.. " +
+                        "with same minutes");
         }
     }
 
@@ -226,14 +238,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
        switch (facilityName){
            case "Tennis Court":
                totalAmount = totalTimeOccupied * 50;
-               operationListType(totalAmount);
+               operationListType(totalAmount, facilityName);
                break;
            case "ClubHouse":
                String [] breakTime = bookingStartTime.split(" ");
                    if (breakTime[1].endsWith("am")) {
                        String [] splitStartData = bookingStartTime.split(":");
-                       if(Integer.parseInt(splitStartData[0])>10 &&
-                               Integer.parseInt(splitStartData[0])<12){
+                       if(Integer.parseInt(splitStartData[0])>=10 &&
+                               Integer.parseInt(splitStartData[0])<=12){
                            totalAmount = totalTimeOccupied * 100;
                        }
                    } else if (breakTime[1].endsWith("pm")) {
@@ -243,32 +255,79 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                            if(Integer.parseInt(splitStartData[0])>=16 &&
                                    Integer.parseInt(splitEndDate[0])<=22){
                                totalAmount = totalTimeOccupied * 500;
-                           }
+                           }else if(Integer.parseInt(splitStartData[0])>=12 &&
+                                   Integer.parseInt(splitEndDate[0])<=16){
+                               totalAmount = totalTimeOccupied *100;
+                           }else
+                               displayError("Cannot book the time slot...");
                        }else
                            displayError("Invalid Time Format !!");
                    }
                    if(totalAmount!=0) {
-                       operationListType(totalAmount);
+                       operationListType(totalAmount, facilityName);
                    }
                break;
        }
     }
 
-    private void operationListType(int totalAmount){
+    private void operationListType(int totalAmount, String typeName){
         if (facilityConfigs.size() > 0) {
-            for (FacilityConfig itemCheck : facilityConfigs) {
-                if (itemCheck.getName().equals(facilityName)
-                        && itemCheck.getTotalAmount() == totalAmount &&
-                        itemCheck.getStartTime().equals(bookingStartTime) &&
-                        itemCheck.getEndTime().equals(bookingEndTime)) {
-                    operationList("isExist", 0);
-                } else {
-                    operationList("newEntry", totalAmount);
+            switch (typeName){
+                case "Tennis Court":
+                    ArrayList<FacilityConfig> listTennis = new ArrayList<>();
+                    for(FacilityConfig item : facilityConfigs) {
+                        if (item.getName().equals("Tennis Court")) {
+                            listTennis.add(item);
+                        }
+                    }
+                    addList(totalAmount, listTennis);
+                    break;
+                case "ClubHouse":
+                    ArrayList<FacilityConfig> listClub = new ArrayList<>();
+                    for(FacilityConfig item : facilityConfigs){
+                        if(item.getName().equals("ClubHouse")){
+                            listClub.add(item);
+                        }
+                    }
+                    addList(totalAmount, listClub);
+                    break;
+            }
+        } else
+            operationList("newEntry", totalAmount);
+    }
+
+    private void addList(int totalAmount, ArrayList<FacilityConfig> list){
+        if(list.size()>0){
+            boolean isExist = false;
+            ArrayList<FacilityConfig> listCheck = new ArrayList<>();
+            for(int i =0; i< list.size(); i++){
+                if(list.get(i).getBookingDate().equals(bookingDate)){
+                    listCheck.add(list.get(i));
                 }
             }
-        } else {
+            if(listCheck.size()==0){
+                isExist = false;
+            }else {
+                int startTime = Integer.parseInt(bookingStartTime.substring(0, 2));
+                for(int i =0; i< listCheck.size(); i++){
+                    int listTimeStart = Integer.parseInt(listCheck.get(i).getStartTime()
+                                .substring(0, 2));
+                    int listTimeEnd = Integer.parseInt(listCheck.get(i).getEndTime()
+                            .substring(0, 2));
+                    if(startTime> listTimeStart && startTime < listTimeEnd){
+
+                    } else if (startTime >= listTimeStart && startTime <= listTimeEnd) {
+                        isExist = true;
+                        operationList("isExist", 0);
+                        break;
+                    }
+                }
+            }
+            if(!isExist){
+                operationList("newEntry", totalAmount);
+            }
+        }else
             operationList("newEntry", totalAmount);
-        }
     }
 
     private void operationList(String type, int totalAmount){
@@ -279,16 +338,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case "newEntry":
                 facilityConfigs.add(new FacilityConfig(facilityName, bookingDate,
                         bookingStartTime, bookingEndTime, "Booked", totalAmount));
+                displayError("Booked at "+ bookingStartTime +", for Rs." + totalAmount);
                 break;
         }
-        clearViews();
+        clearViews(0);
     }
 
-    private void clearViews(){
-        binding.textSelect.setText("");
-        binding.textAddDate.setText("");
-        binding.textStartTime.setText("");
-        binding.textEndTime.setText("");
+    private void clearViews(int  type){
+        switch (type){
+            case 0:
+                binding.textSelect.setText("");
+                binding.textAddDate.setText("");
+                binding.textStartTime.setText("");
+                binding.textEndTime.setText("");
+                facilityName = "";bookingDate = ""; bookingStartTime= "";bookingEndTime = "";
+                setStartTime = false; setEndTime = false;
+                totalTimeOccupied = 0;
+                break;
+            case 1:
+                binding.textAddDate.setText("");
+                binding.textStartTime.setText("");
+                binding.textEndTime.setText("");
+                break;
+            case 2:
+                binding.textStartTime.setText("");
+                binding.textEndTime.setText("");
+                break;
+            case 3:
+                binding.textEndTime.setText("");
+                break;
+        }
     }
 
     private void displayError(String response){

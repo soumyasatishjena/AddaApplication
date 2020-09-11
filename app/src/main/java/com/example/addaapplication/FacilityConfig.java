@@ -6,14 +6,14 @@ public class FacilityConfig {
     private String startTime;
     private String endTime;
     private int price;
-    private String bookingData;
+    private String bookingDate;
     private String status;
     private int totalAmount;
 
-    public FacilityConfig(String name, String bookingData, String startTime, String endTime,
+    public FacilityConfig(String name, String bookingDate, String startTime, String endTime,
                           String status, int totalAmount) {
         this.name = name;
-        this.bookingData= bookingData;
+        this.bookingDate = bookingDate;
         this.startTime = startTime;
         this.endTime = endTime;
         this.status = status;
@@ -68,11 +68,11 @@ public class FacilityConfig {
         this.totalAmount = totalAmount;
     }
 
-    public String getBookingData() {
-        return bookingData;
+    public String getBookingDate() {
+        return bookingDate;
     }
 
-    public void setBookingData(String bookingData) {
-        this.bookingData = bookingData;
+    public void setBookingDate(String bookingDate) {
+        this.bookingDate = bookingDate;
     }
 }
