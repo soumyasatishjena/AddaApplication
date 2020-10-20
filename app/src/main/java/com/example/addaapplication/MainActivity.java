@@ -28,6 +28,7 @@ import com.google.android.material.snackbar.Snackbar;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -305,22 +306,94 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     listCheck.add(list.get(i));
                 }
             }
+//            HashMap<String, ArrayList<FacilityConfig>> map = new HashMap<>();
+//            for(int i =0; i< map.size(); i++){
+//                if(map.containsKey(bookingDate)){
+//                    if(bookingStartTime>= map.get(map.i[0]))
+//                }
+//            }
+//
+//
+//            club = {}
+//            def book(club,date,start_time,end_time):
+//            if date in club:
+//            for i in club[date]:
+//            if start_time >= i[0] and start_time <= i[1]:
+//            return "No slot"
+//            elif end_time >= i[0] and end_time <= i[1]:
+//            return "No slot"
+//            elif start_time <i[0] and end_time >i[1]:
+//            return "No slot"
+//            club[date].append([start_time,end_time])
+//    else:
+//            club[date] = [[start_time,end_time]]
+//            return "Booked"
+
+
             if(listCheck.size()==0){
                 isExist = false;
             }else {
                 int startTime = Integer.parseInt(bookingStartTime.substring(0, 2));
+                int endTime = Integer.parseInt(bookingEndTime.substring(0, 2));
                 for(int i =0; i< listCheck.size(); i++){
                     int listTimeStart = Integer.parseInt(listCheck.get(i).getStartTime()
                                 .substring(0, 2));
                     int listTimeEnd = Integer.parseInt(listCheck.get(i).getEndTime()
                             .substring(0, 2));
-                    if(startTime> listTimeStart && startTime < listTimeEnd){
+//                    if(listCheck.size()>1) {
+//                        int listNextTimeStart = Integer.parseInt(listCheck.get(i + 1).getStartTime()
+//                                .substring(0, 2));
+//                        int listNextTimeEnd = Integer.parseInt(listCheck.get(i + 1).getEndTime()
+//                                .substring(0, 2));
+//
+//                        if (startTime >= listTimeStart && startTime <= listNextTimeStart) {
+//                            isExist = true;
+//                            operationList("isExist", 0);
+//                            break;
+//                        } else if (endTime >= listTimeEnd && endTime <= listNextTimeEnd) {
+//                            isExist = true;
+//                            operationList("isExist", 0);
+//                            break;
+//                        } else if (startTime < listTimeStart && endTime > listNextTimeStart) {
+//                            isExist = true;
+//                            operationList("isExist", 0);
+//                            break;
+//                        }
+//                    }else {
+                        if(startTime> listTimeStart && startTime < listTimeEnd){
+                            isExist = true;
+                            operationList("isExist", 0);
+                            break;
+                        } else if (startTime >= listTimeStart && startTime <= listTimeEnd) {
+                            isExist = true;
+                            operationList("isExist", 0);
+                            break;
+                        }else if(startTime<=listTimeStart){
+//                            if(startTime<listTimeStart && endTime<=listTimeStart) {
+//                                operationList("newEntry", totalAmount);
+//                                break;
+//                            }else if (endTime >= listTimeStart && endTime< listTimeEnd) {
+//                                isExist = true;
+//                                operationList("isExist", 0);
+//                                break;
+//                            }
+                            ArrayList<TimesData> timeList = new ArrayList<>();
+                            for(int j =0; j< list.size(); j++){
+                                int timeStart = Integer.parseInt(list.get(j).getStartTime()
+                                        .substring(0, 2));
+                                int timeEnd = Integer.parseInt(list.get(j).getEndTime()
+                                        .substring(0, 2));
+                                timeList.add(new TimesData(bookingDate, timeStart, timeEnd));
+//                                if(startTime<timeStart && startTime<=timeEnd){
+//
+//                                }else if(startTime>=timeStart && endTime<timeEnd){
+//
+//                                }
 
-                    } else if (startTime >= listTimeStart && startTime <= listTimeEnd) {
-                        isExist = true;
-                        operationList("isExist", 0);
-                        break;
-                    }
+                            }
+
+
+                        }
                 }
             }
             if(!isExist){
